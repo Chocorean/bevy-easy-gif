@@ -1,0 +1,144 @@
+use std::time::Duration;
+
+use bevy::{
+    asset::{AssetLoader, LoadContext, io::Reader},
+    prelude::*,
+};
+use gif::{ColorOutput, DecodeOptions, Repeat};
+use thiserror::Error;
+
+/// Entity used to spawn a [Sprite] with an animated texture.
+///
+/// ```
+/// commands.spawn(Gif { handle: asset_server.load("frog.gif") })
+/// ```
+#[derive(Component)]
+#[require(Sprite, GifPlayer)]
+pub struct Gif {
+    pub handle: Handle<GifAsset>,
+}
+
+/// Internal state of a [Gif]. Store the current frame index and its associated timer.
+///
+/// Warning: `remaining` == None is different from `remaining` == Some(0)
+/// The former means: Repeat indefinitely.
+/// The latter: Do not repeat _anymore_.
+/// Ultimately, `remaining` == Some(n: n!= 0) means: Repeat n more time(s).
+///
+/// Just like in [GifAsset], `remaining` initial value is equal to the total
+/// number of loops to display minus 1.
+#[derive(Component)]
+pub struct GifPlayer {
+    pub current: usize,
+    pub timer: Timer,
+    pub remaining: Option<u16>,
+}
+
+impl Default for GifPlayer {
+    fn default() -> Self {
+        Self {
+            current: 0,
+            timer: Timer::new(Duration::from_millis(100), TimerMode::Repeating),
+            remaining: None,
+        }
+    }
+}
+
+/// Contains the data of one frame of a GIF
+#[derive(Debug)]
+pub struct GifFrame {
+    pub width: u32,
+    pub height: u32,
+    pub rgba: Vec<u8>,
+    pub duration: Duration,
+}
+
+/// Contains the data of a GIF
+/// Careful: `times` represents the raw value of the GIF repeat metadata
+/// For a GIF that loops a total of 5 times, its value is going to be 4.
+#[derive(Asset, TypePath, Debug)]
+pub struct GifAsset {
+    pub frames: Vec<GifFrame>,
+    pub handles: Vec<Handle<Image>>,
+    pub times: Option<u16>,
+}
+
+#[derive(Error, Debug)]
+pub enum GifLoaderError {
+    /// An [IO](std::io) Error
+    #[error("Could not load asset: {0}")]
+    Io(#[from] std::io::Error),
+    /// A [gif](gif) DecodingError
+    #[error("Could not decode asset: {0}")]
+    Decode(#[from] gif::DecodingError),
+    /// A data error
+    #[error("Decoded gif frame size mismatch: {0} != {1}")]
+    SizeMismatch(usize, usize),
+}
+
+/// Allow to load GIF files properly with the AssetServer
+#[derive(Default)]
+pub struct GifLoader;
+
+impl AssetLoader for GifLoader {
+    type Asset = GifAsset;
+    type Settings = bool;
+    type Error = GifLoaderError;
+
+    async fn load(
+        &self,
+        reader: &mut dyn Reader,
+        _settings: &Self::Settings,
+        _load_context: &mut LoadContext<'_>,
+    ) -> Result<Self::Asset, Self::Error> {
+        let mut bytes = Vec::new();
+        reader.read_to_end(&mut bytes).await?;
+
+        let mut decoder = DecodeOptions::new();
+        decoder.set_color_output(ColorOutput::RGBA);
+        let mut decoder = decoder.read_info(std::io::Cursor::new(bytes))?;
+
+        let mut frames = Vec::new();
+        while let Some(frame) = decoder.read_next_frame()? {
+            let width = frame.width as u32;
+            let height = frame.height as u32;
+            let rgba = frame.buffer.to_vec();
+
+            // Make sure data is not truncated or smth
+            if rgba.len() != (width as usize) * (height as usize) * 4 {
+                return Err(Self::Error::SizeMismatch(
+                    rgba.len(),
+                    (width as usize) * (height as usize) * 4,
+                ));
+            }
+
+            // frame.delay is in 1/100th of a second, per [GIF spec](https://docs.rs/gif/latest/gif/struct.Frame.html#structfield.delay)
+            let ms = (frame.delay as u64).saturating_mul(10);
+            let duration = Duration::from_millis(ms.max(1)); // avoid 0 ms frames
+
+            frames.push(GifFrame {
+                width,
+                height,
+                rgba,
+                duration,
+            });
+        }
+
+        let times = match decoder.repeat() {
+            Repeat::Infinite => None,
+            Repeat::Finite(n) => Some(n),
+        };
+
+        // Create the GifAsset and set it as the default loaded asset
+        let asset = GifAsset {
+            frames,
+            handles: vec![], // will be loaded in `initialize_gifs`
+            times,
+        };
+        Ok(asset)
+    }
+
+    fn extensions(&self) -> &[&str] {
+        &["gif"]
+    }
+}
