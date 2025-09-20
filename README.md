@@ -19,9 +19,10 @@ Respecting the timing and the repetitions of the GIF files is supported too.
 
 ## Usage
 
-Dead-simple:
+This is all it takes in a system to spawn a Sprite with an animated texture from a GIF file:
 
 ```rust
+// It does require a `Camera2d` and the `GifPlugin`
 fn spawn_gif(mut commands: Commands, asset_server: ResMut<AssetServer>) {
     let handle: Handle<GifAsset> = asset_server.load("frog_large.gif");
     commands.spawn(
