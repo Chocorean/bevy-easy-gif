@@ -8,6 +8,7 @@ use gif::{ColorOutput, DecodeOptions, Repeat};
 use thiserror::Error;
 
 /// Entity used to spawn a [Sprite] with an animated texture.
+/// This is the main and might be the only struct you will use from this crate.
 ///
 /// ```no_run
 /// commands.spawn(Gif { handle: asset_server.load("frog.gif") })
@@ -18,15 +19,16 @@ pub struct Gif {
     pub handle: Handle<GifAsset>,
 }
 
-/// Internal state of a [Gif]. Store the current frame index and its associated timer.
+/// Internal state of a [Gif]. Store the current frame index, its associated timer,
+/// and the number of remaining repetitions, minus the one currently running.
 ///
-/// Warning: `remaining` == None is different from `remaining` == Some(0)
+/// That means a [GifPlayer] with `remaining` being 0 and its `timer` not paused will
+/// still update the [Sprite] for a last rotation.
+///
+/// Also: `remaining` == None is different from `remaining` == Some(0)
 /// The former means: Repeat indefinitely.
 /// The latter: Do not repeat _anymore_.
 /// Ultimately, `remaining` == Some(n: n!= 0) means: Repeat n more time(s).
-///
-/// Just like in [GifAsset], `remaining` initial value is equal to the total
-/// number of loops to display minus 1.
 #[derive(Component, Debug, Clone)]
 pub struct GifPlayer {
     pub current: usize,
@@ -45,6 +47,9 @@ impl Default for GifPlayer {
 }
 
 /// Contains the data of one frame of a GIF
+///
+/// What really distinguish this from using a [TextureAtlas] is the unique [Duration] of each frame,
+/// stored within the asset.
 #[derive(Debug, Clone)]
 pub struct GifFrame {
     pub width: u32,
@@ -54,8 +59,10 @@ pub struct GifFrame {
 }
 
 /// Contains the data of a GIF
-/// Careful: `times` represents the raw value of the GIF repeat metadata
-/// For a GIF that loops a total of 5 times, its value is going to be 4.
+///
+/// Careful: `times` represents the raw value of the GIF repeat metadata, which can
+/// be interpreted as "how many times will I _repeat_", with an emphasis on _repeat_.
+/// For a GIF that plays a total of 5 loops, this value is going to be 4.
 #[derive(Asset, TypePath, Debug, Clone)]
 pub struct GifAsset {
     pub frames: Vec<GifFrame>,
