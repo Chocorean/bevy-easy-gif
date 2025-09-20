@@ -20,8 +20,8 @@ mod tests {
     };
     use bevy::prelude::*;
 
-    #[test]
-    fn test_gif_init() {
+    /// Build a minimal app for testing purposes
+    fn build_app() -> App {
         // Build a minimal app with asset support and our systems
         let mut app = App::new();
         app.add_plugins(MinimalPlugins)
@@ -31,37 +31,17 @@ mod tests {
         app.init_asset::<Image>();
         app.init_asset::<GifAsset>();
         app.init_asset_loader::<GifLoader>();
+        app
+    }
 
-        // Add the system under test
-        app.add_systems(Update, initialize_gifs);
-
-        // Load the gif asset via the AssetServer so the loader creates a GifAsset
-        let handle: Handle<GifAsset> = app.world().load_asset("frog_five.gif");
-
-        // Wait for the loader to create the GifAsset (with a safety max tries)
-        let mut tries = 0;
+    /// Update the app a few times until the [GifAsset] is properly loaded by the [AssetServer],
+    /// or panic!
+    fn wait_for_asset(app: &mut App, handle: &Handle<GifAsset>) {
         const MAX_TRIES: usize = 10;
+        let mut tries = 0;
         loop {
             app.update();
-            if app
-                .world()
-                .resource::<Assets<GifAsset>>()
-                .get(&handle)
-                .is_some()
-            {
-                break;
-            }
-            tries += 1;
-            if tries > MAX_TRIES {
-                panic!("GifAsset did not appear after {} updates", MAX_TRIES);
-            }
-        }
-
-        // Wait until frames vector is non-empty (loader parsed frames)
-        tries = 0;
-        loop {
-            app.update();
-            if let Some(gif_asset) = app.world().resource::<Assets<GifAsset>>().get(&handle) {
+            if let Some(gif_asset) = app.world().resource::<Assets<GifAsset>>().get(handle) {
                 if !gif_asset.frames.is_empty() {
                     break;
                 }
@@ -71,20 +51,27 @@ mod tests {
                 panic!("GifAsset frames not populated after {} updates", MAX_TRIES);
             }
         }
+    }
 
-        // Spawn an entity that has a Sprite, a Gif pointing to the handle and a GifPlayer
-        // Spawn AFTER the frames are available so initialize_gifs (Added<Gif>) runs when frames exist.
+    #[test]
+    fn test_gif_init() {
+        let mut app = build_app();
+
+        // Add the system under test
+        app.add_systems(Update, initialize_gifs);
+
+        // Load the gif asset via the AssetServer so the loader creates a GifAsset
+        let handle: Handle<GifAsset> = app.world().load_asset("frog_five.gif");
+
+        // Wait until frames vector is non-empty (loader parsed frames)
+        wait_for_asset(&mut app, &handle);
+
         let entity = app
             .world_mut()
             .spawn((
                 Sprite::default(),
                 Gif {
                     handle: handle.clone(),
-                },
-                GifPlayer {
-                    current: usize::MAX, // will be overwritten by initialize_gifs
-                    timer: Timer::from_seconds(1.0, TimerMode::Repeating),
-                    remaining: None,
                 },
             ))
             .id();
@@ -127,32 +114,11 @@ mod tests {
 
     #[test]
     fn test_custom_params_spawn() {
-        let mut app = App::new();
-        app.add_plugins(MinimalPlugins)
-            .add_plugins(bevy::asset::AssetPlugin::default());
-
-        app.init_asset::<Image>();
-        app.init_asset::<GifAsset>();
-        app.init_asset_loader::<GifLoader>();
+        let mut app = build_app();
         app.add_systems(Update, initialize_gifs);
 
         let handle: Handle<GifAsset> = app.world().load_asset("frog_five.gif");
-
-        // wait until frames are parsed
-        let mut tries = 0;
-        const MAX_TRIES: usize = 10;
-        loop {
-            app.update();
-            if let Some(gif_asset) = app.world().resource::<Assets<GifAsset>>().get(&handle) {
-                if !gif_asset.frames.is_empty() {
-                    break;
-                }
-            }
-            tries += 1;
-            if tries > MAX_TRIES {
-                panic!("GifAsset frames not populated after {} updates", MAX_TRIES);
-            }
-        }
+        wait_for_asset(&mut app, &handle);
 
         // spawn sprite with custom properties AFTER frames are available
         let custom_size = Vec2::new(42.0, 24.0);
@@ -207,35 +173,12 @@ mod tests {
 
     #[test]
     fn test_sprite_change_on_timer_tick() {
-        let mut app = App::new();
-        app.add_plugins(MinimalPlugins)
-            .add_plugins(bevy::asset::AssetPlugin::default());
-
-        app.init_asset::<Image>();
-        app.init_asset::<GifAsset>();
-        app.init_asset_loader::<GifLoader>();
-
-        // systems under test
+        let mut app = build_app();
         app.add_systems(Update, initialize_gifs);
         app.add_systems(Update, animate_gifs);
 
-        // load gif and wait for frames to be parsed
         let handle: Handle<GifAsset> = app.world().load_asset("frog_five.gif");
-
-        const MAX_TRIES: usize = 10;
-        let mut tries = 0;
-        loop {
-            app.update();
-            if let Some(gif_asset) = app.world().resource::<Assets<GifAsset>>().get(&handle) {
-                if !gif_asset.frames.is_empty() {
-                    break;
-                }
-            }
-            tries += 1;
-            if tries > MAX_TRIES {
-                panic!("GifAsset frames not populated after {} updates", MAX_TRIES);
-            }
-        }
+        wait_for_asset(&mut app, &handle);
 
         // ensure we have at least two frames to observe a change
         let gif_asset = app
@@ -306,35 +249,12 @@ mod tests {
 
     #[test]
     fn test_nth_loading_and_updating() {
-        let mut app = App::new();
-        app.add_plugins(MinimalPlugins)
-            .add_plugins(bevy::asset::AssetPlugin::default());
-
-        app.init_asset::<Image>();
-        app.init_asset::<GifAsset>();
-        app.init_asset_loader::<GifLoader>();
-
-        // systems under test
+        let mut app = build_app();
         app.add_systems(Update, initialize_gifs);
         app.add_systems(Update, animate_gifs);
 
-        // load gif and wait for frames to be parsed
         let handle: Handle<GifAsset> = app.world().load_asset("frog_five.gif");
-
-        const MAX_TRIES: usize = 10;
-        let mut tries = 0;
-        loop {
-            app.update();
-            if let Some(gif_asset) = app.world().resource::<Assets<GifAsset>>().get(&handle) {
-                if !gif_asset.frames.is_empty() {
-                    break;
-                }
-            }
-            tries += 1;
-            if tries > MAX_TRIES {
-                panic!("GifAsset frames not populated after {} updates", MAX_TRIES);
-            }
-        }
+        wait_for_asset(&mut app, &handle);
 
         // ensure we have at least two frames to observe a change
         let gif_asset = app
@@ -399,35 +319,12 @@ mod tests {
 
     #[test]
     fn test_nth_stop_playing() {
-        let mut app = App::new();
-        app.add_plugins(MinimalPlugins)
-            .add_plugins(bevy::asset::AssetPlugin::default());
-
-        app.init_asset::<Image>();
-        app.init_asset::<GifAsset>();
-        app.init_asset_loader::<GifLoader>();
-
-        // systems under test
+        let mut app = build_app();
         app.add_systems(Update, initialize_gifs);
         app.add_systems(Update, animate_gifs);
 
-        // load gif and wait for frames to be parsed
         let handle: Handle<GifAsset> = app.world().load_asset("frog_once.gif");
-
-        const MAX_TRIES: usize = 10;
-        let mut tries = 0;
-        loop {
-            app.update();
-            if let Some(gif_asset) = app.world().resource::<Assets<GifAsset>>().get(&handle) {
-                if !gif_asset.frames.is_empty() {
-                    break;
-                }
-            }
-            tries += 1;
-            if tries > MAX_TRIES {
-                panic!("GifAsset frames not populated after {} updates", MAX_TRIES);
-            }
-        }
+        wait_for_asset(&mut app, &handle);
 
         // ensure we have at least two frames to observe a change
         let _gif_asset = app
@@ -474,35 +371,12 @@ mod tests {
 
     #[test]
     fn test_repeating_never_stops() {
-        let mut app = App::new();
-        app.add_plugins(MinimalPlugins)
-            .add_plugins(bevy::asset::AssetPlugin::default());
-
-        app.init_asset::<Image>();
-        app.init_asset::<GifAsset>();
-        app.init_asset_loader::<GifLoader>();
-
-        // systems under test
+        let mut app = build_app();
         app.add_systems(Update, initialize_gifs);
         app.add_systems(Update, animate_gifs);
 
-        // load gif and wait for frames to be parsed
         let handle: Handle<GifAsset> = app.world().load_asset("frog_infinite.gif");
-
-        const MAX_TRIES: usize = 10;
-        let mut tries = 0;
-        loop {
-            app.update();
-            if let Some(gif_asset) = app.world().resource::<Assets<GifAsset>>().get(&handle) {
-                if !gif_asset.frames.is_empty() {
-                    break;
-                }
-            }
-            tries += 1;
-            if tries > MAX_TRIES {
-                panic!("GifAsset frames not populated after {} updates", MAX_TRIES);
-            }
-        }
+        wait_for_asset(&mut app, &handle);
 
         // ensure we have at least two frames to observe a change
         let _gif_asset = app
