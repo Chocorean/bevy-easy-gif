@@ -41,7 +41,7 @@ pub fn initialize_gifs(
             // unwrap()-ing is fine here, because this is called after `asset_server.load()`,
             // which would panic if there is an issue with the GIF file.
             sprite.image = handle.clone();
-            // just replacing the image allow to not overwrite previously given member (see [basic example](examples/basic.rs#spawn_flipped_larger_frog).)
+            // just replacing the image allow to not overwrite previously given members (see [brothers example](examples/brothers.rs#spawn_flipped_larger_gif).)
 
             // initialize timer
             player.current = 0; // first frame
