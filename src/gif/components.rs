@@ -9,10 +9,10 @@ use thiserror::Error;
 
 /// Entity used to spawn a [Sprite] with an animated texture.
 ///
-/// ```
+/// ```no_run
 /// commands.spawn(Gif { handle: asset_server.load("frog.gif") })
 /// ```
-#[derive(Component)]
+#[derive(Component, Debug, Clone)]
 #[require(Sprite, GifPlayer)]
 pub struct Gif {
     pub handle: Handle<GifAsset>,
@@ -27,7 +27,7 @@ pub struct Gif {
 ///
 /// Just like in [GifAsset], `remaining` initial value is equal to the total
 /// number of loops to display minus 1.
-#[derive(Component)]
+#[derive(Component, Debug, Clone)]
 pub struct GifPlayer {
     pub current: usize,
     pub timer: Timer,
@@ -45,7 +45,7 @@ impl Default for GifPlayer {
 }
 
 /// Contains the data of one frame of a GIF
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GifFrame {
     pub width: u32,
     pub height: u32,
@@ -56,7 +56,7 @@ pub struct GifFrame {
 /// Contains the data of a GIF
 /// Careful: `times` represents the raw value of the GIF repeat metadata
 /// For a GIF that loops a total of 5 times, its value is going to be 4.
-#[derive(Asset, TypePath, Debug)]
+#[derive(Asset, TypePath, Debug, Clone)]
 pub struct GifAsset {
     pub frames: Vec<GifFrame>,
     pub handles: Vec<Handle<Image>>,
