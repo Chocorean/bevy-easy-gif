@@ -1,0 +1,4 @@
+
+
+[alias]
+doc-local = ["doc", "--lib", "--no-deps"]
