@@ -2,6 +2,15 @@
 name = "bevy_easy_gif"
 version = "0.1.0"
 edition = "2024"
+authors = ["Chocorean <chocorean@pm.me>"]
+description = "Bevy crate for easy GIF spawning in 2D environments"
+readme = "README.md"
+repository = "https://github.com/chocorean/bevy-easy-gif"
+license = "MIT OR Apache-2.0"
+keywords = ["bevy", "gif", "assets"]
+categories = ["game-development", "visualization"]
+homepage = "https://github.com/chocorean/bevy-easy-gif"
+
 
 [dependencies]
 bevy = "0.16.1"
