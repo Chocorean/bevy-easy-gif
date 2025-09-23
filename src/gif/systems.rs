@@ -61,9 +61,7 @@ pub fn animate_gifs(
     for (gif, mut sprite, mut player) in gifs_q {
         if let Some(gif_asset) = gifs.get(&gif.handle) {
             player.timer.tick(time.delta());
-
-            // dbg!(time.clone(), player.timer.finished());
-            if player.timer.finished() {
+            if player.timer.is_finished() {
                 // Update timer
                 player.current = (player.current + 1) % gif_asset.frames.len();
                 let frame = &gif_asset.frames[player.current];

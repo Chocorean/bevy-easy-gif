@@ -223,7 +223,7 @@ mod tests {
                 player
                     .timer
                     .tick(first_frame_duration - Duration::from_nanos(1));
-                assert!(!player.timer.finished());
+                assert!(!player.timer.is_finished());
             }
         }
 
@@ -365,7 +365,7 @@ mod tests {
                 .single(app.world_mut())
                 .expect("Should be exactly one player");
             assert_eq!(player.current, 0); // run only once so it stays at zero
-            assert!(player.timer.paused());
+            assert!(player.timer.is_paused());
         }
     }
 
@@ -429,7 +429,7 @@ mod tests {
                 .single(app.world_mut())
                 .expect("Should be exactly one player");
             assert_eq!(player.remaining, None);
-            assert!(!player.timer.paused());
+            assert!(!player.timer.is_paused());
             assert_eq!(player.current, 3);
         }
     }
