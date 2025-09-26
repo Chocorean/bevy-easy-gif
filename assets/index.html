@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WASM Demo</title>
+    <style>
+        body {
+            margin: 0;
+            background: #222;
+            color: #eee;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <noscript>This page requires JavaScript to run the WASM app.</noscript>
+    <script type="module">
+        import init from "./basic.js";
+        init("./basic_bg.wasm");
+    </script>
+</body>
+
+</html>
