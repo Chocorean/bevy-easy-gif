@@ -76,6 +76,10 @@ mod tests {
             ))
             .id();
 
+        // Re-emit the load event so initialize_gifs triggers
+        app.world_mut()
+            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+
         // Run one update to let initialize_gifs run (it matches Added<Gif>)
         app.update();
 
@@ -139,6 +143,10 @@ mod tests {
             ))
             .id();
 
+        // Re-emit the load event so initialize_gifs triggers
+        app.world_mut()
+            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+
         // let initialize_gifs run for the Added<Gif> entity
         app.update();
 
@@ -198,6 +206,10 @@ mod tests {
                 handle: handle.clone(),
             })
             .id();
+
+        // Re-emit the load event so initialize_gifs triggers
+        app.world_mut()
+            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
 
         // let initialize_gifs set up handles and sprite.image
         app.update();
@@ -275,6 +287,10 @@ mod tests {
             })
             .id();
 
+        // Re-emit the load event so initialize_gifs triggers
+        app.world_mut()
+            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+
         // let initialize_gifs set up handles and sprite.image
         app.update();
 
@@ -341,6 +357,10 @@ mod tests {
             })
             .id();
 
+        // Re-emit the load event so initialize_gifs triggers
+        app.world_mut()
+            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+
         // let initialize_gifs set up handles and sprite.image
         app.update();
 
@@ -392,6 +412,10 @@ mod tests {
                 handle: handle.clone(),
             })
             .id();
+
+        // Re-emit the load event so initialize_gifs triggers
+        app.world_mut()
+            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
 
         // let initialize_gifs set up handles and sprite.image
         app.update();

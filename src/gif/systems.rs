@@ -8,45 +8,55 @@ use crate::gif::{Gif, GifAsset, GifPlayer};
 
 /// Initialize the [Gif]'s [Sprite] with the first image of the sequence.
 pub fn initialize_gifs(
-    gifs_q: Query<(&mut Sprite, &Gif, &mut GifPlayer), Added<Gif>>,
+    mut ev_gif: EventReader<AssetEvent<GifAsset>>,
+    mut gifs_q: Query<(&mut Sprite, &Gif, &mut GifPlayer)>,
     mut gifs: ResMut<Assets<GifAsset>>,
     asset_server: ResMut<AssetServer>,
 ) {
-    for (mut sprite, gif, mut player) in gifs_q {
-        if let Some(GifAsset {
-            frames,
-            handles,
-            times,
-        }) = gifs.get_mut(&gif.handle)
-        {
-            // Build all frames and store them
-            for frame in frames.iter() {
-                let image = Image::new_fill(
-                    Extent3d {
-                        width: frame.width,
-                        height: frame.height,
-                        depth_or_array_layers: 1,
-                    },
-                    TextureDimension::D2,
-                    &frame.rgba,
-                    TextureFormat::Rgba8UnormSrgb,
-                    RenderAssetUsages::all(),
-                );
-                let handle = asset_server.add(image);
-                handles.push(handle);
+    for ev in ev_gif.read() {
+        let id = match ev {
+            AssetEvent::LoadedWithDependencies { id } => *id,
+            _ => continue,
+        };
+        for (mut sprite, gif, mut player) in gifs_q.iter_mut() {
+            if gif.handle.id() != id {
+                continue;
             }
-            // Get first frame and load it to the sprite
-            let frame = frames.first().unwrap();
-            let handle = handles.first().unwrap();
-            // unwrap()-ing is fine here, because this is called after `asset_server.load()`,
-            // which would panic if there is an issue with the GIF file.
-            sprite.image = handle.clone();
-            // just replacing the image allow to not overwrite previously given members (see [brothers example](examples/brothers.rs#spawn_flipped_larger_gif).)
+            if let Some(GifAsset {
+                frames,
+                handles,
+                times,
+            }) = gifs.get_mut(&gif.handle)
+            {
+                // Build all frames and store them
+                for frame in frames.iter() {
+                    let image = Image::new_fill(
+                        Extent3d {
+                            width: frame.width,
+                            height: frame.height,
+                            depth_or_array_layers: 1,
+                        },
+                        TextureDimension::D2,
+                        &frame.rgba,
+                        TextureFormat::Rgba8UnormSrgb,
+                        RenderAssetUsages::all(),
+                    );
+                    let handle = asset_server.add(image);
+                    handles.push(handle);
+                }
+                // Get first frame and load it to the sprite
+                let frame = frames.first().unwrap();
+                let handle = handles.first().unwrap();
+                // unwrap()-ing is fine here, because this is called after `asset_server.load()`,
+                // which would panic if there is an issue with the GIF file.
+                sprite.image = handle.clone();
+                // just replacing the image allow to not overwrite previously given members (see [brothers example](examples/brothers.rs#spawn_flipped_larger_gif).)
 
-            // initialize timer
-            player.current = 0; // first frame
-            player.timer = Timer::new(frame.duration, TimerMode::Repeating);
-            player.remaining = *times;
+                // initialize timer
+                player.current = 0; // first frame
+                player.timer = Timer::new(frame.duration, TimerMode::Repeating);
+                player.remaining = *times;
+            }
         }
     }
 }
@@ -61,8 +71,6 @@ pub fn animate_gifs(
     for (gif, mut sprite, mut player) in gifs_q {
         if let Some(gif_asset) = gifs.get(&gif.handle) {
             player.timer.tick(time.delta());
-
-            // dbg!(time.clone(), player.timer.finished());
             if player.timer.finished() {
                 // Update timer
                 player.current = (player.current + 1) % gif_asset.frames.len();

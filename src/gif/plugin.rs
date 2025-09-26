@@ -8,6 +8,7 @@ impl Plugin for GifPlugin {
     fn build(&self, app: &mut App) {
         app.init_asset::<GifAsset>();
         app.init_asset_loader::<GifLoader>();
+        app.add_systems(Startup, initialize_gifs);
         app.add_systems(Update, (initialize_gifs, animate_gifs));
     }
 }
