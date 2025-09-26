@@ -1,6 +1,6 @@
 [package]
 name = "bevy_easy_gif"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Chocorean <chocorean@pm.me>"]
 description = "Bevy crate for easy GIF spawning in 2D environments"
