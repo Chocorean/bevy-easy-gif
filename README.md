@@ -1,5 +1,11 @@
 # bevy-easy-gif 🐸
 
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Doc](https://docs.rs/bevy_easy_gif/badge.svg)](https://docs.rs/bevy_easy_gif)
+[![Crate](https://img.shields.io/crates/v/bevy_easy_gif.svg)](https://crates.io/crates/bevy_easy_gif)
+[![Bevy tracking](https://img.shields.io/badge/Bevy%20tracking-v0.16-lightblue)](https://github.com/bevyengine/bevy/blob/main/docs/plugins_guidelines.md#main-branch-tracking)
+
 <img src="assets/frog_large.gif" alt="frog" width="200"/>
 
 A 0-work 0-pain way to display GIF files in your Bevy games.
@@ -45,7 +51,7 @@ The `GifPlayer`'s timer is automatically configured, after reading the GIF metad
 
 | bevy | bevy-easy-gif |
 |------|---------------|
-| 0.16 | 0.1.2 |
+| 0.16 | 0.1.3 |
 
 ## Tests
 

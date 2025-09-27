@@ -1,7 +1,7 @@
 //! Display 2 frogs with some parameters.
 
 use bevy::prelude::*;
-use bevy_easy_gif::prelude::*;
+use bevy_easy_gif::*;
 
 pub fn main() {
     App::new()

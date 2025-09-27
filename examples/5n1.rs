@@ -3,7 +3,7 @@
 //! with tools such as EXIF for instance.
 
 use bevy::prelude::*;
-use bevy_easy_gif::prelude::*;
+use bevy_easy_gif::*;
 
 pub fn main() {
     App::new()

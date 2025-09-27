@@ -71,7 +71,7 @@ pub struct GifAsset {
 }
 
 #[derive(Error, Debug)]
-pub enum GifLoaderError {
+pub(crate) enum GifLoaderError {
     /// An [IO](std::io) Error
     #[error("Could not load asset: {0}")]
     Io(#[from] std::io::Error),
@@ -85,7 +85,7 @@ pub enum GifLoaderError {
 
 /// Allow to load GIF files properly with the AssetServer
 #[derive(Default)]
-pub struct GifLoader;
+pub(crate) struct GifLoader;
 
 impl AssetLoader for GifLoader {
     type Asset = GifAsset;
@@ -154,5 +154,7 @@ impl AssetLoader for GifLoader {
 /// entity when its loops are over.
 ///
 /// See [despawn example](examples/despawn.rs)
+///
+/// It has no effect on infinite-looping GIF files.
 #[derive(Component)]
 pub struct GifDespawn;

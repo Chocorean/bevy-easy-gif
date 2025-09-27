@@ -15,12 +15,8 @@ mod tests {
     use std::time::Duration;
 
     use crate::{
-        gif::{
-            components::GifLoader,
-            events::GifDespawnEvent,
-            systems::{animate_gifs, despawn_gifs, initialize_gifs},
-        },
-        prelude::*,
+        gif::{components::GifLoader, events::GifDespawnEvent, systems::*},
+        *,
     };
     use bevy::prelude::*;
 

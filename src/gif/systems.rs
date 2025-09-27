@@ -7,7 +7,7 @@ use bevy::{
 use crate::gif::{Gif, GifAsset, GifDespawn, GifPlayer, events::GifDespawnEvent};
 
 /// Initialize the [Gif]'s [Sprite] with the first image of the sequence.
-pub fn initialize_gifs(
+pub(crate) fn initialize_gifs(
     mut ev_gif: EventReader<AssetEvent<GifAsset>>,
     mut gifs_q: Query<(&mut Sprite, &Gif, &mut GifPlayer)>,
     mut gifs: ResMut<Assets<GifAsset>>,
@@ -63,7 +63,7 @@ pub fn initialize_gifs(
 
 /// Update the [GifPlayer] of all [Gif]s entities.
 /// If the timer expires, we update the player and the [Sprite] image, accordingly to the known config.
-pub fn animate_gifs(
+pub(crate) fn animate_gifs(
     gifs_q: Query<(&Gif, &mut Sprite, &mut GifPlayer), With<Gif>>,
     gifs: Res<Assets<GifAsset>>,
     time: Res<Time>,
@@ -103,7 +103,7 @@ pub fn animate_gifs(
 
 /// Triggered when a GIF with a finite number of loops reaches its end.
 /// Despawn the relevant entity.
-pub fn despawn_gifs(
+pub(crate) fn despawn_gifs(
     mut commands: Commands,
     mut reader: EventReader<GifDespawnEvent>,
     gif_q: Query<(&Gif, Entity), With<GifDespawn>>,
