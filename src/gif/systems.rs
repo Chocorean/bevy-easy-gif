@@ -4,7 +4,7 @@ use bevy::{
     render::render_resource::{Extent3d, TextureDimension, TextureFormat},
 };
 
-use crate::gif::{Gif, GifAsset, GifPlayer};
+use crate::gif::{Gif, GifAsset, GifDespawn, GifPlayer, events::GifDespawnEvent};
 
 /// Initialize the [Gif]'s [Sprite] with the first image of the sequence.
 pub fn initialize_gifs(
@@ -67,6 +67,7 @@ pub fn animate_gifs(
     gifs_q: Query<(&Gif, &mut Sprite, &mut GifPlayer), With<Gif>>,
     gifs: Res<Assets<GifAsset>>,
     time: Res<Time>,
+    mut writer: EventWriter<GifDespawnEvent>,
 ) {
     for (gif, mut sprite, mut player) in gifs_q {
         if let Some(gif_asset) = gifs.get(&gif.handle) {
@@ -82,6 +83,7 @@ pub fn animate_gifs(
                     if let Some(remaining) = player.remaining {
                         if remaining == 0 {
                             player.timer.pause();
+                            writer.write(GifDespawnEvent(gif.handle.clone()));
                         } else {
                             player.remaining = Some(remaining - 1);
                         }
@@ -94,6 +96,22 @@ pub fn animate_gifs(
                 // Update sprite
                 let handle = gif_asset.handles[player.current].clone();
                 sprite.image = handle;
+            }
+        }
+    }
+}
+
+/// Triggered when a GIF with a finite number of loops reaches its end.
+/// Despawn the relevant entity.
+pub fn despawn_gifs(
+    mut commands: Commands,
+    mut reader: EventReader<GifDespawnEvent>,
+    gif_q: Query<(&Gif, Entity), With<GifDespawn>>,
+) {
+    for GifDespawnEvent(handle) in reader.read() {
+        for (gif, entity) in gif_q {
+            if gif.handle.id() == handle.id() {
+                commands.entity(entity).despawn();
             }
         }
     }

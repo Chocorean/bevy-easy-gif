@@ -23,11 +23,6 @@ fn spawn_gif(mut commands: Commands, asset_server: ResMut<AssetServer>) {
 
 There are also [a few examples](./examples/) you can check for customization.
 
-### Tests
-
-To test the library, run: `cargo test --lib`.
-To see an example using wasm, run `bin/wasm`, and [open your browser](http://localhost:8000).
-
 ## Why?
 
 GIF files are by default not supported by Bevy's asset loader (only the first frame is loaded).
@@ -50,4 +45,9 @@ The `GifPlayer`'s timer is automatically configured, after reading the GIF metad
 
 | bevy | bevy-easy-gif |
 |------|---------------|
-| 0.16 | 0.1.1 |
+| 0.16 | 0.1.2 |
+
+## Tests
+
+To test the library, run: `cargo test --lib`.
+To see an example using wasm, run `bin/wasm`, and [open your browser](http://localhost:8000).

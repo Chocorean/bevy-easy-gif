@@ -11,5 +11,5 @@ pub mod prelude {
     //! use bevy_gif::prelude::*;
     //! ```
 
-    pub use crate::gif::{Gif, GifAsset, GifPlayer, GifPlugin};
+    pub use crate::gif::{Gif, GifAsset, GifDespawn, GifPlayer, GifPlugin};
 }

@@ -149,3 +149,10 @@ impl AssetLoader for GifLoader {
         &["gif"]
     }
 }
+
+/// Insert this component next to a non-infinite [Gif] to despawn the
+/// entity when its loops are over.
+///
+/// See [despawn example](examples/despawn.rs)
+#[derive(Component)]
+pub struct GifDespawn;
