@@ -1,2 +1,5 @@
 [alias]
 doc-local = ["doc", "--lib", "--no-deps"]
+
+[target.wasm32-unknown-unknown]
+rustflags = ['--cfg', 'getrandom_backend="wasm_js"']
