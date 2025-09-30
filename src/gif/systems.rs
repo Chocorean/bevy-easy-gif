@@ -4,11 +4,11 @@ use bevy::{
     render::render_resource::{Extent3d, TextureDimension, TextureFormat},
 };
 
-use crate::gif::{Gif, GifAsset, GifDespawn, GifPlayer, events::GifDespawnEvent};
+use crate::gif::{Gif, GifAsset, GifDespawn, GifPlayer, messages::GifDespawnMessage};
 
 /// Initialize the [Gif]'s [Sprite] with the first image of the sequence.
 pub(crate) fn initialize_gifs(
-    mut ev_gif: EventReader<AssetEvent<GifAsset>>,
+    mut ev_gif: MessageReader<AssetEvent<GifAsset>>,
     mut gifs_q: Query<(&mut Sprite, &Gif, &mut GifPlayer)>,
     mut gifs: ResMut<Assets<GifAsset>>,
     asset_server: ResMut<AssetServer>,
@@ -67,7 +67,7 @@ pub(crate) fn animate_gifs(
     gifs_q: Query<(&Gif, &mut Sprite, &mut GifPlayer), With<Gif>>,
     gifs: Res<Assets<GifAsset>>,
     time: Res<Time>,
-    mut writer: EventWriter<GifDespawnEvent>,
+    mut writer: MessageWriter<GifDespawnMessage>,
 ) {
     for (gif, mut sprite, mut player) in gifs_q {
         if let Some(gif_asset) = gifs.get(&gif.handle) {
@@ -83,7 +83,7 @@ pub(crate) fn animate_gifs(
                     if let Some(remaining) = player.remaining {
                         if remaining == 0 {
                             player.timer.pause();
-                            writer.write(GifDespawnEvent(gif.handle.clone()));
+                            writer.write(GifDespawnMessage(gif.handle.clone()));
                         } else {
                             player.remaining = Some(remaining - 1);
                         }
@@ -105,10 +105,10 @@ pub(crate) fn animate_gifs(
 /// Despawn the relevant entity.
 pub(crate) fn despawn_gifs(
     mut commands: Commands,
-    mut reader: EventReader<GifDespawnEvent>,
+    mut reader: MessageReader<GifDespawnMessage>,
     gif_q: Query<(&Gif, Entity), With<GifDespawn>>,
 ) {
-    for GifDespawnEvent(handle) in reader.read() {
+    for GifDespawnMessage(handle) in reader.read() {
         for (gif, entity) in gif_q {
             if gif.handle.id() == handle.id() {
                 commands.entity(entity).despawn();
