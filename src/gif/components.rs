@@ -158,3 +158,11 @@ impl AssetLoader for GifLoader {
 /// It has no effect on infinite-looping GIF files.
 #[derive(Component)]
 pub struct GifDespawn;
+
+/// Ui component to display a gif file.
+/// Works the same than Gif
+#[derive(Component, Debug, Clone)]
+#[require(ImageNode, GifPlayer)]
+pub struct GifNode {
+    pub handle: Handle<GifAsset>,
+}

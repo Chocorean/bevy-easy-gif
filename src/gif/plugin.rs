@@ -14,6 +14,9 @@ impl Plugin for GifPlugin {
         app.init_asset::<GifAsset>();
         app.add_event::<GifDespawnEvent>();
         app.init_asset_loader::<GifLoader>();
-        app.add_systems(Update, (initialize_gifs, animate_gifs, despawn_gifs));
+        app.add_systems(
+            Update,
+            (initialize_gifs, animate_gifs, despawn_gifs).chain(),
+        );
     }
 }

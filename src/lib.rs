@@ -38,4 +38,4 @@
 //! The [examples](https://github.com/Chocorean/bevy-easy-gif/tree/main/examples) cover pretty much all there is to know.
 
 mod gif;
-pub use crate::gif::{Gif, GifAsset, GifDespawn, GifPlayer, GifPlugin};
+pub use crate::gif::{Gif, GifAsset, GifDespawn, GifNode, GifPlayer, GifPlugin};
