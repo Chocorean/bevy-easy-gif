@@ -1,5 +1,11 @@
 # bevy_easy_gif changelog
 
+## 0.1.4
+
+- Fix bug where same GifAsset would get their handles doubled if loaded another time
+- Introduce GifNode, a Bevy UI component for displaying GIF.
+- Add a UI example
+
 ## 0.1.3
 
 - Remove useless prelude
