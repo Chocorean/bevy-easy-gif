@@ -1,2 +1,27 @@
 [alias]
 doc-local = ["doc", "--lib", "--no-deps"]
+
+coverage = [
+    "llvm-cov",
+    "--workspace",
+    "--html",
+    "--ignore-filename-regex",
+    "(mod\\.rs|plugin\\.rs)",
+]
+coverage-report = [
+    "llvm-cov",
+    "report",
+    "--text",
+    "--ignore-filename-regex",
+    "(mod\\.rs|plugin\\.rs)",
+]
+coverage-lcov = [
+    "llvm-cov",
+    "--workspace",
+    "--lcov",
+    "--output-path",
+    "target/llvm-cov/lcov.info",
+    "--ignore-filename-regex",
+    "(mod\\.rs|plugin\\.rs)",
+]
+coverage-clean = ["llvm-cov", "clean"]
