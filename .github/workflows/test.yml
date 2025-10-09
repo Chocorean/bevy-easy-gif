@@ -18,8 +18,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # - name: Install dependencies
-    #   run: sudo apt update -y && sudo apt install -y libasound2-dev libudev-dev
+    - name: Install dependencies
+      run: sudo apt update -y && sudo apt install -y libasound2-dev libudev-dev
 
 
     - name: Install Rust toolchain
