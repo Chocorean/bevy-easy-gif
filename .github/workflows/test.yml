@@ -1,0 +1,31 @@
+name: Test
+
+permissions: {}
+
+on:
+  push:
+    branches: [ main, dev_ci ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # - name: Install dependencies
+    #   run: sudo apt update -y && sudo apt install -y libasound2-dev libudev-dev
+
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+
+    - uses: Swatinem/rust-cache@v2
+
+    - name: Test
+      run: cargo test --lib
