@@ -4,7 +4,7 @@ permissions: {}
 
 on:
   push:
-    branches: [ main, dev_ci ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
