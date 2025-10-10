@@ -160,9 +160,21 @@ impl AssetLoader for GifLoader {
 pub struct GifDespawn;
 
 /// Ui component to display a gif file.
-/// Works the same than Gif
+///
+/// Works the same than [Gif]
 #[derive(Component, Debug, Clone)]
 #[require(ImageNode, GifPlayer)]
 pub struct GifNode {
+    pub handle: Handle<GifAsset>,
+}
+
+/// 3d component to display a gif file on a 3d object.
+///
+/// It needs to be spawned alongside a [Mesh3d].
+///
+/// Works almost the same than [Gif]
+#[derive(Component, Debug, Clone)]
+#[require(MeshMaterial3d<StandardMaterial>, GifPlayer)]
+pub struct Gif3d {
     pub handle: Handle<GifAsset>,
 }

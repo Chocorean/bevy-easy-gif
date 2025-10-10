@@ -5,27 +5,29 @@ use bevy::{
 };
 
 use crate::{
-    GifNode,
+    Gif3d, GifNode,
     gif::{Gif, GifAsset, GifDespawn, GifPlayer, events::GifDespawnEvent},
 };
 
-/// Initialize the [Gif]'s [Sprite] / [GifNode]'s [ImageNode] with the first image of the sequence.
-/// We do not use [AssetEvent]s anymore because if the asset is loaded first,
-/// then used in a [Gif] or [GifNode], it would never be initialized.
+/// Initialize the [Gif]'s [Sprite] / [GifNode]'s [ImageNode] / [Gif3d]'s [MeshMaterial3d] with the first image of the sequence.
 pub(crate) fn initialize_gifs(
     mut gifs_q: Query<(
         Option<(&Gif, &mut Sprite)>,
         Option<(&GifNode, &mut ImageNode)>,
+        Option<(&Gif3d, &mut MeshMaterial3d<StandardMaterial>)>,
         &mut GifPlayer,
     )>,
     mut gifs: ResMut<Assets<GifAsset>>,
     asset_server: ResMut<AssetServer>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    for (gif_option, gifnode_option, mut player) in gifs_q.iter_mut() {
+    for (gif_option, gifnode_option, gif3d_option, mut player) in gifs_q.iter_mut() {
         let handle = if let Some((gif, _)) = gif_option {
             gif.handle.clone()
         } else if let Some((gif_node, _)) = gifnode_option {
             gif_node.handle.clone()
+        } else if let Some((gif3d, _)) = gif3d_option {
+            gif3d.handle.clone()
         } else {
             panic!("Unexpected error: a GifPlayer was inserted in an unknown entity");
         };
@@ -62,12 +64,19 @@ pub(crate) fn initialize_gifs(
             // unwrap()-ing is fine here, because this is called after `asset_server.load()`,
             // which would panic if there is an issue with the GIF file.
             if let Some((_, mut sprite)) = gif_option {
+                // just replacing the image allow to not overwrite previously given members (see [brothers example](examples/brothers.rs#spawn_flipped_larger_gif).)
+                // same principle for other kinds of gif
                 sprite.image = handle.clone();
             }
             if let Some((_, mut image_node)) = gifnode_option {
                 image_node.image = handle.clone();
             }
-            // just replacing the image allow to not overwrite previously given members (see [brothers example](examples/brothers.rs#spawn_flipped_larger_gif).)
+            if let Some((_, mm)) = gif3d_option {
+                if let Some(mat) = materials.get_mut(&mm.0) {
+                    mat.base_color_texture = Some(handle.clone());
+                    mat.alpha_mode = AlphaMode::Blend;
+                }
+            }
 
             // initialize timer
             player.current = 0; // first frame
@@ -77,23 +86,28 @@ pub(crate) fn initialize_gifs(
     }
 }
 
-/// Update the [GifPlayer] of all [Gif]s / [GifNode]s entities.
+/// Update the [GifPlayer] of all [Gif]s / [GifNode]s / [Gif3d] entities.
 /// If the timer expires, we update the player and the [Sprite] / [ImageNode] image, accordingly to the known config.
+/// It updates the [MeshMaterial3d] for 3d objects.
 pub(crate) fn animate_gifs(
     gifs_q: Query<(
         Option<(&Gif, &mut Sprite)>,
         Option<(&GifNode, &mut ImageNode)>,
+        Option<(&Gif3d, &mut MeshMaterial3d<StandardMaterial>)>,
         &mut GifPlayer,
     )>,
     gifs: Res<Assets<GifAsset>>,
     time: Res<Time>,
     mut writer: EventWriter<GifDespawnEvent>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    for (gif_option, gifnode_option, mut player) in gifs_q {
+    for (gif_option, gifnode_option, gif3d_option, mut player) in gifs_q {
         let handle = if let Some((gif, _)) = gif_option {
             gif.handle.clone()
         } else if let Some((gif_node, _)) = gifnode_option {
             gif_node.handle.clone()
+        } else if let Some((gif3d, _)) = gif3d_option {
+            gif3d.handle.clone()
         } else {
             panic!("Unexpected error: a GifPlayer was inserted in an unknown entity");
         };
@@ -129,6 +143,12 @@ pub(crate) fn animate_gifs(
                 if let Some((_, mut image_node)) = gifnode_option {
                     image_node.image = handle.clone();
                 }
+                if let Some((_, mm)) = gif3d_option {
+                    if let Some(mat) = materials.get_mut(&mm.0) {
+                        mat.base_color_texture = Some(handle.clone());
+                        mat.alpha_mode = AlphaMode::Blend;
+                    }
+                }
             }
         }
     }
@@ -139,14 +159,16 @@ pub(crate) fn animate_gifs(
 pub(crate) fn despawn_gifs(
     mut commands: Commands,
     mut reader: EventReader<GifDespawnEvent>,
-    gif_q: Query<(Option<&Gif>, Option<&GifNode>, Entity), With<GifDespawn>>,
+    gif_q: Query<(Option<&Gif>, Option<&GifNode>, Option<&Gif3d>, Entity), With<GifDespawn>>,
 ) {
     for GifDespawnEvent(handle) in reader.read() {
-        for (gif_option, gifnode_option, entity) in gif_q {
+        for (gif_option, gifnode_option, gif3d_option, entity) in gif_q {
             let gif_handle = if let Some(gif) = gif_option {
                 gif.handle.clone()
             } else if let Some(gif_node) = gifnode_option {
                 gif_node.handle.clone()
+            } else if let Some(gif3d) = gif3d_option {
+                gif3d.handle.clone()
             } else {
                 panic!("Unexpected error: a GifPlayer was inserted in an unknown entity");
             };
