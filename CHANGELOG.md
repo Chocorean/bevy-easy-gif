@@ -1,5 +1,9 @@
 # bevy_easy_gif changelog
 
+## 0.2.2
+
+- Update CI dependencies
+
 ## 0.2.1
 
 - 0.2.0 had already been used but I yanked it (lesson learned). Using 0.2.1 to publish it.
