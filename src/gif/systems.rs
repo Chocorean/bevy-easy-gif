@@ -6,7 +6,7 @@ use bevy::{
 
 use crate::{
     Gif3d, GifNode,
-    gif::{Gif, GifAsset, GifDespawn, GifPlayer, events::GifDespawnEvent},
+    gif::{Gif, GifAsset, GifDespawn, GifPlayer, messages::GifDespawnMessage},
 };
 
 /// Initialize the [Gif]'s [Sprite] / [GifNode]'s [ImageNode] / [Gif3d]'s [MeshMaterial3d] with the first image of the sequence.
@@ -98,7 +98,7 @@ pub(crate) fn animate_gifs(
     )>,
     gifs: Res<Assets<GifAsset>>,
     time: Res<Time>,
-    mut writer: EventWriter<GifDespawnEvent>,
+    mut writer: MessageWriter<GifDespawnMessage>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     for (gif_option, gifnode_option, gif3d_option, mut player) in gifs_q {
@@ -114,7 +114,7 @@ pub(crate) fn animate_gifs(
 
         if let Some(gif_asset) = gifs.get(&handle) {
             player.timer.tick(time.delta());
-            if player.timer.finished() {
+            if player.timer.is_finished() {
                 // Update timer
                 player.current = (player.current + 1) % gif_asset.frames.len();
                 let frame = &gif_asset.frames[player.current];
@@ -125,7 +125,7 @@ pub(crate) fn animate_gifs(
                     if let Some(remaining) = player.remaining {
                         if remaining == 0 {
                             player.timer.pause();
-                            writer.write(GifDespawnEvent(handle.clone()));
+                            writer.write(GifDespawnMessage(handle.clone()));
                         } else {
                             player.remaining = Some(remaining - 1);
                         }
@@ -158,10 +158,10 @@ pub(crate) fn animate_gifs(
 /// Despawn the relevant entity.
 pub(crate) fn despawn_gifs(
     mut commands: Commands,
-    mut reader: EventReader<GifDespawnEvent>,
+    mut reader: MessageReader<GifDespawnMessage>,
     gif_q: Query<(Option<&Gif>, Option<&GifNode>, Option<&Gif3d>, Entity), With<GifDespawn>>,
 ) {
-    for GifDespawnEvent(handle) in reader.read() {
+    for GifDespawnMessage(handle) in reader.read() {
         for (gif_option, gifnode_option, gif3d_option, entity) in gif_q {
             let gif_handle = if let Some(gif) = gif_option {
                 gif.handle.clone()

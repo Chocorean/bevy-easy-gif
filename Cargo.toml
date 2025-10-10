@@ -1,6 +1,6 @@
 [package]
 name = "bevy_easy_gif"
-version = "0.1.5"
+version = "0.2.0"
 edition = "2024"
 authors = ["Chocorean <chocorean@pm.me>"]
 description = "Bevy crate for easy GIF spawning in 2D environments"
@@ -13,6 +13,6 @@ homepage = "https://github.com/chocorean/bevy-easy-gif"
 
 
 [dependencies]
-bevy = "0.16.1"
+bevy = "0.17.2"
 gif = "0.13.3"
-thiserror = "2.0.16"
+thiserror = "2.0.17"

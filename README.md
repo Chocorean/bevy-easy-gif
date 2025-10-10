@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Doc](https://docs.rs/bevy_easy_gif/badge.svg)](https://docs.rs/bevy_easy_gif)
 [![Crate](https://img.shields.io/crates/v/bevy_easy_gif.svg)](https://crates.io/crates/bevy_easy_gif)
-[![Bevy tracking](https://img.shields.io/badge/Bevy%20tracking-v0.16-lightblue)](https://github.com/bevyengine/bevy/blob/main/docs/plugins_guidelines.md#main-branch-tracking)
+[![Bevy tracking](https://img.shields.io/badge/Bevy%20tracking-v0.17-lightblue)](https://github.com/bevyengine/bevy/blob/main/docs/plugins_guidelines.md#main-branch-tracking)
 [![CI testing](https://github.com/Chocorean/bevy-easy-gif/actions/workflows/test.yml/badge.svg)](https://github.com/Chocorean/bevy-easy-gif/actions/workflows/test.yml)
 
 <img src="assets/frog_large.gif" alt="frog" width="200"/>
@@ -61,6 +61,7 @@ The `GifPlayer`'s timer is automatically configured, after reading the GIF metad
 
 | bevy | bevy-easy-gif |
 |------|---------------|
+| 0.17 | 0.2.0 |
 | 0.16 | 0.1.5 |
 
 ## Tests

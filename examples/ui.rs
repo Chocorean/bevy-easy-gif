@@ -11,7 +11,7 @@ pub fn main() {
                 .set(WindowPlugin {
                     primary_window: Some(Window {
                         title: "GifNode example - bevy_easy_gif".to_string(),
-                        resolution: bevy::window::WindowResolution::new(400.0, 200.0),
+                        resolution: bevy::window::WindowResolution::new(400, 200),
                         ..default()
                     }),
                     ..default()
@@ -23,12 +23,7 @@ pub fn main() {
 }
 
 fn setup_camera(mut commands: Commands) {
-    commands.spawn((
-        Camera2d,
-        Projection::Orthographic(OrthographicProjection {
-            ..OrthographicProjection::default_2d()
-        }),
-    ));
+    commands.spawn(Camera2d);
 }
 
 fn spawn_ui(mut commands: Commands, asset_server: Res<AssetServer>) {

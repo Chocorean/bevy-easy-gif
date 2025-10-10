@@ -1,5 +1,5 @@
 mod components;
-mod events;
+mod messages;
 mod plugin;
 mod systems;
 
@@ -15,7 +15,7 @@ mod tests {
     use std::time::Duration;
 
     use crate::{
-        gif::{components::GifLoader, events::GifDespawnEvent, systems::*},
+        gif::{components::GifLoader, messages::GifDespawnMessage, systems::*},
         *,
     };
     use bevy::prelude::*;
@@ -77,9 +77,9 @@ mod tests {
             ))
             .id();
 
-        // Re-emit the load event so initialize_gifs triggers
+        // Re-emit the load message so initialize_gifs triggers
         app.world_mut()
-            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+            .write_message(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
 
         // Run one update to let initialize_gifs run (it matches Added<Gif>)
         app.update();
@@ -144,9 +144,9 @@ mod tests {
             ))
             .id();
 
-        // Re-emit the load event so initialize_gifs triggers
+        // Re-emit the load message so initialize_gifs triggers
         app.world_mut()
-            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+            .write_message(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
 
         // let initialize_gifs run for the Added<Gif> entity
         app.update();
@@ -185,7 +185,7 @@ mod tests {
         let mut app = build_app();
         app.add_systems(Update, initialize_gifs);
         app.add_systems(Update, animate_gifs);
-        app.add_event::<GifDespawnEvent>();
+        app.add_message::<GifDespawnMessage>();
 
         let handle: Handle<GifAsset> = app.world().load_asset("frog_five.gif");
         wait_for_asset(&mut app, &handle);
@@ -209,9 +209,9 @@ mod tests {
             })
             .id();
 
-        // Re-emit the load event so initialize_gifs triggers
+        // Re-emit the load message so initialize_gifs triggers
         app.world_mut()
-            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+            .write_message(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
 
         // let initialize_gifs set up handles and sprite.image
         app.update();
@@ -266,7 +266,7 @@ mod tests {
         let mut app = build_app();
         app.add_systems(Update, initialize_gifs);
         app.add_systems(Update, animate_gifs);
-        app.add_event::<GifDespawnEvent>();
+        app.add_message::<GifDespawnMessage>();
 
         let handle: Handle<GifAsset> = app.world().load_asset("frog_five.gif");
         wait_for_asset(&mut app, &handle);
@@ -290,9 +290,9 @@ mod tests {
             })
             .id();
 
-        // Re-emit the load event so initialize_gifs triggers
+        // Re-emit the load message so initialize_gifs triggers
         app.world_mut()
-            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+            .write_message(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
 
         // let initialize_gifs set up handles and sprite.image
         app.update();
@@ -341,7 +341,7 @@ mod tests {
         let mut app = build_app();
         app.add_systems(Update, initialize_gifs);
         app.add_systems(Update, animate_gifs);
-        app.add_event::<GifDespawnEvent>();
+        app.add_message::<GifDespawnMessage>();
 
         let handle: Handle<GifAsset> = app.world().load_asset("frog_once.gif");
         wait_for_asset(&mut app, &handle);
@@ -361,9 +361,9 @@ mod tests {
             })
             .id();
 
-        // Re-emit the load event so initialize_gifs triggers
+        // Re-emit the load message so initialize_gifs triggers
         app.world_mut()
-            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+            .write_message(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
 
         // let initialize_gifs set up handles and sprite.image
         app.update();
@@ -398,7 +398,7 @@ mod tests {
         let mut app = build_app();
         app.add_systems(Update, initialize_gifs);
         app.add_systems(Update, animate_gifs);
-        app.add_event::<GifDespawnEvent>();
+        app.add_message::<GifDespawnMessage>();
 
         let handle: Handle<GifAsset> = app.world().load_asset("frog_infinite.gif");
         wait_for_asset(&mut app, &handle);
@@ -418,9 +418,9 @@ mod tests {
             })
             .id();
 
-        // Re-emit the load event so initialize_gifs triggers
+        // Re-emit the load message so initialize_gifs triggers
         app.world_mut()
-            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+            .write_message(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
 
         // let initialize_gifs set up handles and sprite.image
         app.update();
@@ -469,7 +469,7 @@ mod tests {
 
         // Add the system under test
         app.add_systems(Update, (initialize_gifs, animate_gifs, despawn_gifs));
-        app.add_event::<GifDespawnEvent>();
+        app.add_message::<GifDespawnMessage>();
 
         // Load the gif asset via the AssetServer so the loader creates a GifAsset
         let handle: Handle<GifAsset> = app.world().load_asset("frog_once.gif");
@@ -488,9 +488,9 @@ mod tests {
             ))
             .id();
 
-        // Re-emit the load event so initialize_gifs triggers
+        // Re-emit the load message so initialize_gifs triggers
         app.world_mut()
-            .send_event(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
+            .write_message(AssetEvent::<GifAsset>::LoadedWithDependencies { id: handle.id() });
 
         // Run one update to let initialize_gifs run
         app.update();
