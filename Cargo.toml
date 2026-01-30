@@ -13,6 +13,6 @@ homepage = "https://github.com/chocorean/bevy-easy-gif"
 
 
 [dependencies]
-bevy = "0.17.2"
+bevy = "0.18.0"
 gif = "0.13.3"
 thiserror = "2.0.17"
