@@ -61,7 +61,7 @@ The `GifPlayer`'s timer is automatically configured, after reading the GIF metad
 
 | bevy | bevy-easy-gif |
 |------|---------------|
-| 0.18 | 0.3 |
+| 0.18 | 0.3.0 |
 | 0.17 | 0.2.1 |
 | 0.16 | 0.1.5 |
 
