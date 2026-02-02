@@ -1,8 +1,8 @@
 # bevy-easy-gif 🐸
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License: Apache](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Doc](https://docs.rs/bevy_easy_gif/badge.svg)](https://docs.rs/bevy_easy_gif)
+[![Documentation](https://docs.rs/bevy_easy_gif/badge.svg)](https://docs.rs/bevy_easy_gif)
 [![Crate](https://img.shields.io/crates/v/bevy_easy_gif.svg)](https://crates.io/crates/bevy_easy_gif)
 [![Bevy tracking](https://img.shields.io/badge/Bevy%20tracking-v0.18-lightblue)](https://github.com/bevyengine/bevy/blob/main/docs/plugins_guidelines.md#main-branch-tracking)
 [![CI testing](https://github.com/Chocorean/bevy-easy-gif/actions/workflows/test.yml/badge.svg)](https://github.com/Chocorean/bevy-easy-gif/actions/workflows/test.yml)
