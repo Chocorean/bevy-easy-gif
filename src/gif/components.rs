@@ -84,7 +84,7 @@ pub(crate) enum GifLoaderError {
 }
 
 /// Allow to load GIF files properly with the AssetServer
-#[derive(Default)]
+#[derive(Default, TypePath)]
 pub(crate) struct GifLoader;
 
 impl AssetLoader for GifLoader {
