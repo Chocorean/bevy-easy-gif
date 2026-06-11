@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://docs.rs/bevy_easy_gif/badge.svg)](https://docs.rs/bevy_easy_gif)
 [![Crate](https://img.shields.io/crates/v/bevy_easy_gif.svg)](https://crates.io/crates/bevy_easy_gif)
-[![Bevy tracking](https://img.shields.io/badge/Bevy%20tracking-v0.18-lightblue)](https://github.com/bevyengine/bevy/blob/main/docs/plugins_guidelines.md#main-branch-tracking)
+[![Bevy tracking](https://img.shields.io/badge/Bevy%20tracking-v0.19-lightblue)](https://github.com/bevyengine/bevy/blob/main/docs/plugins_guidelines.md#main-branch-tracking)
 [![CI testing](https://github.com/Chocorean/bevy-easy-gif/actions/workflows/test.yml/badge.svg)](https://github.com/Chocorean/bevy-easy-gif/actions/workflows/test.yml)
 
 <img src="assets/frog_large.gif" alt="frog" width="200"/>
@@ -32,7 +32,7 @@ There are also [a few examples](./examples/) you can check for customization.
 
 ## Features matrix
 
-| Bevy version | 0.16 - 0.18 |
+| Bevy version | 0.16 - 0.19 |
 |--------------|-------------|
 | Gif3d | :heavy_check_mark: |
 | GifDespawn | :heavy_check_mark: |
@@ -61,6 +61,7 @@ The `GifPlayer`'s timer is automatically configured, after reading the GIF metad
 
 | bevy | bevy-easy-gif |
 |------|---------------|
+| 0.19 | 0.4.0 |
 | 0.18 | 0.3.0 |
 | 0.17 | 0.2.1 |
 | 0.16 | 0.1.5 |
