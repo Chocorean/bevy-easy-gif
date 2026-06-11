@@ -13,7 +13,7 @@ use thiserror::Error;
 /// ```no_run
 /// commands.spawn(Gif { handle: asset_server.load("frog.gif") })
 /// ```
-#[derive(Component, Debug, Clone)]
+#[derive(Component, Debug, Clone, Default, FromTemplate)]
 #[require(Sprite, GifPlayer)]
 pub struct Gif {
     pub handle: Handle<GifAsset>,
@@ -156,13 +156,13 @@ impl AssetLoader for GifLoader {
 /// See [despawn example](examples/despawn.rs)
 ///
 /// It has no effect on infinite-looping GIF files.
-#[derive(Component)]
+#[derive(Component, Clone, Default)]
 pub struct GifDespawn;
 
 /// Ui component to display a gif file.
 ///
 /// Works the same than [Gif]
-#[derive(Component, Debug, Clone)]
+#[derive(Component, Debug, Clone, FromTemplate)]
 #[require(ImageNode, GifPlayer)]
 pub struct GifNode {
     pub handle: Handle<GifAsset>,
@@ -173,7 +173,7 @@ pub struct GifNode {
 /// It needs to be spawned alongside a [Mesh3d].
 ///
 /// Works almost the same than [Gif]
-#[derive(Component, Debug, Clone)]
+#[derive(Component, Debug, Clone, FromTemplate)]
 #[require(MeshMaterial3d<StandardMaterial>, GifPlayer)]
 pub struct Gif3d {
     pub handle: Handle<GifAsset>,
