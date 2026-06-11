@@ -32,12 +32,14 @@ pub(crate) fn initialize_gifs(
             panic!("Unexpected error: a GifPlayer was inserted in an unknown entity");
         };
 
-        if let Some(GifAsset {
-            frames,
-            handles,
-            times,
-        }) = gifs.get_mut(&handle)
-        {
+        if let Some(asset) = gifs.get_mut(&handle) {
+            let GifAsset {
+                frames,
+                handles,
+                times,
+            } = asset.into_inner();
+
+            // if let Some(asset) = gifs.get_mut(&handle) {
             if handles.len() != 0 {
                 // Already loaded, continue
                 continue;
@@ -72,7 +74,8 @@ pub(crate) fn initialize_gifs(
                 image_node.image = handle.clone();
             }
             if let Some((_, mm)) = gif3d_option {
-                if let Some(mat) = materials.get_mut(&mm.0) {
+                if let Some(asset) = materials.get_mut(&mm.0) {
+                    let mat = asset.into_inner();
                     mat.base_color_texture = Some(handle.clone());
                     mat.alpha_mode = AlphaMode::Blend;
                 }
@@ -144,7 +147,8 @@ pub(crate) fn animate_gifs(
                     image_node.image = handle.clone();
                 }
                 if let Some((_, mm)) = gif3d_option {
-                    if let Some(mat) = materials.get_mut(&mm.0) {
+                    if let Some(asset) = materials.get_mut(&mm.0) {
+                        let mat = asset.into_inner();
                         mat.base_color_texture = Some(handle.clone());
                         mat.alpha_mode = AlphaMode::Blend;
                     }
