@@ -26,9 +26,8 @@ fn setup_camera(mut commands: Commands) {
     commands.spawn(Camera2d);
 }
 
-fn spawn_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let handle = asset_server.load("frog_large.gif");
-    commands.spawn((
+fn spawn_ui(mut commands: Commands) {
+    commands.spawn_scene(bsn! {
         Node {
             width: Val::Percent(100.),
             height: Val::Percent(100.),
@@ -36,9 +35,11 @@ fn spawn_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
             flex_direction: FlexDirection::Column,
             justify_content: JustifyContent::Center,
             align_items: AlignItems::Center,
-            row_gap: Val::Px(12.0),
-            ..default()
-        },
-        children![Text::new("Hello dear"), GifNode { handle }],
-    ));
+            row_gap: Val::Px(12.0)
+        }
+        Children [
+            (Text("Hello dear")),
+            (GifNode { handle: "frog_large.gif" })
+        ]
+    });
 }

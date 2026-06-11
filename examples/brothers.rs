@@ -26,27 +26,23 @@ fn setup_camera(mut commands: Commands) {
     commands.spawn(Camera2d);
 }
 
-fn spawn_gif(mut commands: Commands, asset_server: ResMut<AssetServer>) {
-    let handle: Handle<GifAsset> = asset_server.load("frog_infinite.gif");
-    commands.spawn((
-        Gif { handle },
-        Transform::from_translation(Vec3::new(-10., 0., 0.)),
+fn spawn_gif(mut commands: Commands) {
+    commands.spawn_scene(bsn! {
+        Gif { handle: "frog_infinite.gif" }
+        Transform::from_translation(Vec3::new(-10., 0., 0.))
         Sprite {
-            custom_size: Some(Vec2::new(24., 24.)),
-            ..default()
-        },
-    ));
+            custom_size: Vec2::new(24., 24.)
+        }
+    });
 }
 
-fn spawn_flipped_larger_gif(mut commands: Commands, asset_server: ResMut<AssetServer>) {
-    let handle: Handle<GifAsset> = asset_server.load("frog_infinite.gif");
-    commands.spawn((
-        Gif { handle },
-        Transform::from_translation(Vec3::new(40., 6., 0.)),
+fn spawn_flipped_larger_gif(mut commands: Commands) {
+    commands.spawn_scene(bsn! {
+        Gif { handle: "frog_infinite.gif" }
+        Transform::from_translation(Vec3::new(40., 6., 0.))
         Sprite {
             flip_x: true, // won't be overwritten
-            custom_size: Some(Vec2::new(40., 40.)),
-            ..default()
-        },
-    ));
+            custom_size: Vec2::new(40., 40.)
+        }
+    });
 }

@@ -26,7 +26,8 @@ fn setup_camera(mut commands: Commands) {
     commands.spawn(Camera2d);
 }
 
-fn spawn_gif(mut commands: Commands, asset_server: ResMut<AssetServer>) {
-    let handle: Handle<GifAsset> = asset_server.load("frog_large.gif");
-    commands.spawn(Gif { handle });
+fn spawn_gif(mut commands: Commands) {
+    commands.spawn_scene(bsn! {
+        Gif { handle: "frog_large.gif" }
+    });
 }

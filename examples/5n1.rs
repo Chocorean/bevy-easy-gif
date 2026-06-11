@@ -25,58 +25,52 @@ pub fn main() {
         .run();
 }
 
+#[derive(Component, FromTemplate)]
+struct First;
+
+#[derive(Component, FromTemplate)]
+struct Sec;
+
+#[derive(Component, FromTemplate)]
+struct Left;
+
+#[derive(Component, FromTemplate)]
+struct Right;
+
 fn setup_camera(mut commands: Commands) {
     commands.spawn(Camera2d);
 }
 
-fn spawn_gifs(mut commands: Commands, asset_server: ResMut<AssetServer>) {
-    let handle: Handle<GifAsset> = asset_server.load("frog_five.gif");
-    commands.spawn((
-        Gif { handle },
+fn spawn_gifs(mut commands: Commands) {
+    commands.spawn_scene(bsn! {
+        Gif { handle: "frog_five.gif" }
         Sprite {
-            custom_size: Some(Vec2::new(32., 32.)),
-            ..default()
-        },
-        Transform::from_translation(Vec3::new(-20., 0., 0.)),
-        Left,
-    ));
-    let handle: Handle<GifAsset> = asset_server.load("frog_once.gif");
-    commands.spawn((
-        Gif { handle },
+            custom_size: Vec2::new(32., 32.)
+        }
+        Transform::from_translation(Vec3::new(-20., 0., 0.))
+        Left
+    });
+    commands.spawn_scene(bsn! {
+        Gif { handle: "frog_once.gif" }
         Sprite {
             flip_x: true,
-            custom_size: Some(Vec2::new(32., 32.)),
-            ..default()
-        },
-        Transform::from_translation(Vec3::new(20., 0., 0.)),
-        Right,
-    ));
+            custom_size: Vec2::new(32., 32.)
+        }
+        Transform::from_translation(Vec3::new(20., 0., 0.))
+        Right
+    });
 }
 
-#[derive(Component)]
-struct First;
-
-#[derive(Component)]
-struct Sec;
-
-#[derive(Component)]
-struct Left;
-
-#[derive(Component)]
-struct Right;
-
 fn spawn_labels(mut commands: Commands) {
-    commands
-        .spawn(Node {
-            flex_direction: FlexDirection::Column,
-            ..default()
-        })
-        .with_children(|parent| {
-            parent.spawn((Text("Current loop: unknown".to_string()), First, Left));
-            parent.spawn((Text("Remaining loops: unknown".to_string()), Sec, Left));
-        });
-    commands
-        .spawn(Node {
+    commands.spawn_scene(bsn! {
+        Node { flex_direction: FlexDirection::Column }
+        Children [
+            (Text("Current loop: unknown") First Left),
+            (Text("Remaining loops: unknown") Sec Left)
+        ]
+    });
+    commands.spawn_scene(bsn! {
+        Node {
             flex_direction: FlexDirection::Column,
             align_items: AlignItems::FlexEnd,
             position_type: PositionType::Absolute,
@@ -84,12 +78,13 @@ fn spawn_labels(mut commands: Commands) {
             bottom: Val::Px(0.),
             width: Val::Auto,
             height: Val::Auto,
-            ..default()
-        })
-        .with_children(|parent| {
-            parent.spawn((Text("Current loop: unknown".to_string()), First, Right));
-            parent.spawn((Text("Remaining loops: unknown".to_string()), Sec, Right));
-        });
+        }
+        Children [
+            (Text("Current loop: unknown") First Right),
+            (Text("Remaining loops: unknown") Sec Right)
+
+        ]
+    });
 }
 
 fn update_labels(
