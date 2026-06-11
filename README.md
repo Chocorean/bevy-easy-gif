@@ -69,4 +69,4 @@ The `GifPlayer`'s timer is automatically configured, after reading the GIF metad
 ## Tests
 
 To test the library, run: `cargo test --lib`.
-To see an example using wasm, run `bin/wasm`, and [open your browser](http://localhost:8000).
+To see an example using wasm, run `bin/wasm [example]`, and [open your browser](http://localhost:8000).
