@@ -24,8 +24,7 @@
 //!
 //! Spawn a [`Gif`]:
 //!
-//! ```no_run
-//! let handle = asset_loader.load("animated.gif") // located in ./assets/
+//! ```ignore
 //! commands.spawn(Gif { handle });
 //! ```
 //!

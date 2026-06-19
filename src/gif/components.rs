@@ -10,8 +10,8 @@ use thiserror::Error;
 /// Entity used to spawn a [Sprite] with an animated texture.
 /// This is the main and might be the only struct you will use from this crate.
 ///
-/// ```no_run
-/// commands.spawn(Gif { handle: asset_server.load("frog.gif") })
+/// ```ignore
+/// commands.spawn(Gif { handle: "frog.gif" })
 /// ```
 #[derive(Component, Debug, Clone, Default, FromTemplate)]
 #[require(Sprite, GifPlayer)]
