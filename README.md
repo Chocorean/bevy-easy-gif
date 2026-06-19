@@ -21,9 +21,8 @@ This is all it takes in a system to spawn a Sprite with an animated texture from
 ```rust
 // It does require a `Camera2d` and the `GifPlugin`
 fn spawn_gif(mut commands: Commands, asset_server: ResMut<AssetServer>) {
-    let handle: Handle<GifAsset> = asset_server.load("frog_large.gif");
     commands.spawn(
-        Gif { handle }
+        Gif { handle: "frog_large.gif" }
     );
 }
 ```
@@ -69,4 +68,4 @@ The `GifPlayer`'s timer is automatically configured, after reading the GIF metad
 ## Tests
 
 To test the library, run: `cargo test --lib`.
-To see an example using wasm, run `bin/wasm [example]`, and [open your browser](http://localhost:8000).
+To see an example using wasm, run `bin/wasm.sh [example]`, and [open your browser](http://localhost:8000).
