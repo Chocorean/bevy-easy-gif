@@ -38,8 +38,8 @@ fn spawn_ui(mut commands: Commands) {
             row_gap: Val::Px(12.0)
         }
         Children [
-            (Text("Hello dear")),
-            (GifNode { handle: "frog_large.gif" })
+            Text("Hello dear")
+            GifNode { handle: "frog_large.gif" }
         ]
     });
 }

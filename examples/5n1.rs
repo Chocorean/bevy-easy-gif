@@ -65,8 +65,8 @@ fn spawn_labels(mut commands: Commands) {
     commands.spawn_scene(bsn! {
         Node { flex_direction: FlexDirection::Column }
         Children [
-            (Text("Current loop: unknown") First Left),
-            (Text("Remaining loops: unknown") Sec Left)
+            Text("Current loop: unknown") First Left --
+            Text("Remaining loops: unknown") Sec Left
         ]
     });
     commands.spawn_scene(bsn! {
@@ -80,8 +80,8 @@ fn spawn_labels(mut commands: Commands) {
             height: Val::Auto,
         }
         Children [
-            (Text("Current loop: unknown") First Right),
-            (Text("Remaining loops: unknown") Sec Right)
+            Text("Current loop: unknown") First Right --
+            Text("Remaining loops: unknown") Sec Right
 
         ]
     });
