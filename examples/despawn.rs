@@ -1,6 +1,4 @@
-//! Basically the same as [basic](basic.rs), however one animation loop occurs 5 times, and the other only once.
-//! This is configured within the GIF file, and can be checked by inspecting the metadata,
-//! with tools such as EXIF for instance.
+//! Using `GifDespawn` allows to despwan the `Gif` when it is done iterating through its internal loop.
 
 use bevy::prelude::*;
 use bevy_easy_gif::*;
